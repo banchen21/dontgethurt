@@ -152,7 +152,6 @@ public class DrugRuleEngine {
                 }
             }
             case "lamivudine" -> {
-                // 拉米夫定胶囊：10% 概率治愈 AIDS
                 if (disease.aidsStage() > 0 && player.getRandom().nextFloat() < 0.10f) {
                     DISEASE_MANAGER.cureDisease(player, "aids");
                     player.displayClientMessage(

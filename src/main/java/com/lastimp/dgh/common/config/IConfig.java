@@ -117,5 +117,7 @@ public interface IConfig {
 
     float DRUG_NEEDLE_CONTAMINATION_CHANCE();
 
+    float DRUG_LAMIVUDINE_CURE_CHANCE();
+
     int GIVE_UP_TIMEOUT_SECONDS();
 }

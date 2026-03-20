@@ -236,6 +236,10 @@ public class ConfigNF implements IConfig {
             .comment("污染药针感染概率")
             .defineInRange("DRUG_NEEDLE_CONTAMINATION_CHANCE", 0.35, 0.0, 1.0);
 
+        private static final ForgeConfigSpec.DoubleValue DRUG_LAMIVUDINE_CURE_CHANCE = BUILDER
+            .comment("拉米夫定胶囊治愈 AIDS 的概率（0.0 - 1.0）")
+            .defineInRange("DRUG_LAMIVUDINE_CURE_CHANCE", 0.10, 0.0, 1.0);
+
     private static final ForgeConfigSpec.IntValue GIVE_UP_TIMEOUT_SECONDS = BUILDER
             .comment("放弃治疗所需持续时间（秒）")
             .defineInRange("GIVE_UP_TIMEOUT_SECONDS", 5, 1, 60);
@@ -526,6 +530,11 @@ public class ConfigNF implements IConfig {
     @Override
     public float DRUG_NEEDLE_CONTAMINATION_CHANCE() {
         return (float) (double) DRUG_NEEDLE_CONTAMINATION_CHANCE.get();
+    }
+
+    @Override
+    public float DRUG_LAMIVUDINE_CURE_CHANCE() {
+        return (float) (double) DRUG_LAMIVUDINE_CURE_CHANCE.get();
     }
 
     @Override
