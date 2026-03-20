@@ -30,15 +30,12 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
-import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.player.Inventory;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 import static com.lastimp.dgh.common.capability.bodyPart.base.BodyCondition.*;
 import static com.lastimp.dgh.common.enums.BodyComponents.*;
@@ -53,6 +50,9 @@ public class HealthScreen<T extends HealthMenu> extends AbstractContainerScreen<
     protected static final ResourceLocation HUD_HEART_BEAT_ACC2 = ResourceHelper.ModResource("textures/gui/heart_beat_hud_acc2.png");
     protected static final ResourceLocation HUD_HEART_BEAT_STOP = ResourceHelper.ModResource("textures/gui/heart_beat_hud_stop.png");
     protected static final ResourceLocation SLOT_DISABLE_MASK = ResourceHelper.ModResource("textures/gui/slot_disable_mask.png");
+        // 记录是否至少点击过一次部位（用于初始保持空白）
+        protected boolean hasUserSelectedOnce = false;
+
 
     protected static final int PANEL_WIDTH = 256;   // 面板宽度
     protected static final int PANEL_HEIGHT = 215;  // 面板高度
@@ -67,9 +67,6 @@ public class HealthScreen<T extends HealthMenu> extends AbstractContainerScreen<
     protected static HealthCapability healthData = null;
     protected static DiseaseCapability diseaseData = null;
     protected boolean onOrgan = false;
-    protected int visibleConditionCount = 0;
-    protected int visibleDiseaseCount = 0;
-    protected final List<DiseaseRow> selectedDiseaseRows = new ArrayList<>();
 
     public HealthScreen(T menu, Inventory playerInventory, Component title) {
         super(menu, playerInventory, title);
@@ -104,11 +101,13 @@ public class HealthScreen<T extends HealthMenu> extends AbstractContainerScreen<
                 this.leftPos + x, this.topPos + y, width, height,
                 Component.literal(idx.toString()),
                 (button) -> {
+                    // 始终立即设置选中，保证用户点击后有反馈
+                    this.selectedComponent = idx;
+                    this.hasUserSelectedOnce = true;
                     if (healthData != null) {
                         boolean onOrgan = this.selectedComponent == idx && healthData.getComponent(idx).abnormal(RETRACTED_SKIN) && !this.onOrgan;
                         onOrgan &= this.getMenu().targetEntity.equals(ClientAccessor.getPlayerOrThrow().getUUID());
                         this.setOnOrgan(onOrgan);
-                        this.selectedComponent = idx;
                     }
                 },
                 idx, resource, resourceLighted
@@ -149,16 +148,6 @@ public class HealthScreen<T extends HealthMenu> extends AbstractContainerScreen<
         this.renderTooltip(guiGraphics, mouseX, mouseY);
     }
 
-    @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        boolean clickedBodyComponent = this.isBodyComponentClick(mouseX, mouseY);
-        boolean handled = super.mouseClicked(mouseX, mouseY, button);
-        if (!clickedBodyComponent) {
-            this.clearComponentSelection();
-        }
-        return handled;
-    }
-
     protected void refreshComponent() {
         if (healthData == null) return;
         if (this.componentWidgets.isEmpty()) return;
@@ -174,10 +163,6 @@ public class HealthScreen<T extends HealthMenu> extends AbstractContainerScreen<
     protected void refreshCondition() {
         if (selectedComponent == null) return;
         if (healthData == null) return;
-
-        this.visibleConditionCount = 0;
-        this.visibleDiseaseCount = 0;
-        this.selectedDiseaseRows.clear();
 
         for (HealthConditionWidget widget : this.conditionWidgets.values()){
             widget.visible = false;
@@ -208,32 +193,12 @@ public class HealthScreen<T extends HealthMenu> extends AbstractContainerScreen<
             widget.visible = true;
             widgetCount += 1;
         }
-        this.visibleConditionCount = widgetCount;
-
-        // 将“当前部位相关疾病”并入原条件面板格子区显示，保持点击部位后的阅读路径一致。
-        if (diseaseData != null) {
-            List<DiseaseRow> mapped = buildActiveDiseasesForComponent(this.selectedComponent);
-            int freeSlots = Math.max(0, 12 - this.visibleConditionCount);
-            if (mapped.size() > freeSlots) {
-                mapped = mapped.subList(0, freeSlots);
-            }
-            this.selectedDiseaseRows.addAll(mapped);
-            this.visibleDiseaseCount = this.selectedDiseaseRows.size();
-        }
     }
 
     protected boolean visibilityCheck(AbstractBody body, ResourceLocation key) {
         if (this.onOrgan) return false;
         if (!HealthScanner.healthScannerConditions().contains(key)) return false;
-
-        // 非扫描仪模式下，仍允许显示“已经异常”的状态，避免点击部位后面板空白。
-        if (!this.menu.isDevice && !HealthScanner.eyesightConditions().contains(key)) {
-            if (ConditionAccessor.resistConditions.contains(key)) {
-                return body.abnormalWithHidden(key) || healthData.armorResist(this.selectedComponent, key) > 0;
-            }
-            return ConditionAccessor.get(key).abnormal(body.getCondition(key).getDisplayValue());
-        }
-
+        if (!this.menu.isDevice && !HealthScanner.eyesightConditions().contains(key)) return false;
         if (ConditionAccessor.resistConditions.contains(key) && (body.abnormalWithHidden(key) || healthData.armorResist(this.selectedComponent, key) > 0)) return true;
         if (!ConditionAccessor.get(key).abnormal(body.getCondition(key).getDisplayValue())) return false;
         return true;
@@ -252,167 +217,24 @@ public class HealthScreen<T extends HealthMenu> extends AbstractContainerScreen<
     @Override
     public void onClose() {
         setHealthData(null);
-        setDiseaseData(null);
         GuiOpenWrapper.setHealthScreen(null);
         super.onClose();
     }
 
     @Override
     protected void renderLabels(GuiGraphics guiGraphics, int mouseX, int mouseY) {
-        this.renderDiseaseSummary(guiGraphics);
-        this.renderSelectedComponentDiseases(guiGraphics);
-        this.renderSelectedComponentHint(guiGraphics);
-    }
+        // 初始未点击过时保持空白
+        if (this.selectedComponent == null) return;
 
-    protected void renderSelectedComponentDiseases(GuiGraphics guiGraphics) {
-        if (selectedComponent == null) return;
-        if (this.selectedDiseaseRows.isEmpty()) return;
-
-        int startIndex = this.visibleConditionCount;
-        for (int i = 0; i < this.selectedDiseaseRows.size(); i++) {
-            DiseaseRow row = this.selectedDiseaseRows.get(i);
-            int slotIndex = startIndex + i;
-            int x = 85 + (slotIndex % 2) * 72;
-            int y = 11 + (slotIndex / 2) * 18;
-            this.renderDiseaseCell(guiGraphics, x, y, row);
+        // 如果已选中但数据尚未到达，显示占位加载文字
+        if (healthData == null) {
+            String loading = "正在读取部位数据...";
+            int x = this.leftPos + 85;
+            int y = this.topPos + 11;
+            guiGraphics.drawString(this.font, loading, x, y, 0xFF000000, false);
         }
+        // 否则交由条件 widget 自行渲染（它们是 renderable widgets）
     }
-
-    protected void renderSelectedComponentHint(GuiGraphics guiGraphics) {
-    }
-
-    protected void renderDiseaseSummary(GuiGraphics guiGraphics) {
-        // 只在未选中部位时渲染（避免与 conditionWidgets 区域重叠）
-        if (selectedComponent != null) return;
-    }
-
-    private void renderDiseaseCell(GuiGraphics guiGraphics, int x, int y, DiseaseRow row) {
-        int width = 70;
-        int height = 16;
-        int bgColor = 0xFF3A3C3B;
-        int borderColor = 0xFF000000;
-        int fillColor = diseaseProgressColor(row.stage());
-        int fillW = Math.max(1, Math.min(width - 2, (int) ((width - 2) * (row.progress() / 100.0f))));
-
-        guiGraphics.fill(x, y, x + width, y + height, bgColor);
-        guiGraphics.fill(x + 1, y + 1, x + 1 + fillW, y + height - 1, fillColor);
-        guiGraphics.renderOutline(x, y, width, height, borderColor);
-        this.renderDiseaseIcon(guiGraphics, x, y, row.key());
-
-        String diseaseName = abbreviateDiseaseName(row.key());
-        String stageText = Component.translatable("disease.dgh.stage." + row.stage()).getString();
-        String shortText = diseaseName + " " + stageText;
-        guiGraphics.drawString(font, shortText, x + 17, y + 4, 0xFF000000, false);
-    }
-
-    private void renderDiseaseIcon(GuiGraphics guiGraphics, int x, int y, String diseaseKey) {
-        ResourceLocation texture = diseaseIconTexture(diseaseKey);
-        guiGraphics.pose().pushPose();
-        float scale = 12f / 64f;
-        guiGraphics.pose().scale(scale, scale, 1f);
-        guiGraphics.blit(
-                texture,
-                (int) ((x + 2) / scale), (int) ((y + 2) / scale),
-                0,
-                0f, 0f,
-                64, 64,
-                64, 64
-        );
-        guiGraphics.pose().popPose();
-    }
-
-    private String abbreviateDiseaseName(String diseaseKey) {
-        String diseaseName = Component.translatable("disease.dgh." + diseaseKey).getString();
-        if (Minecraft.getInstance().font.width(diseaseName) <= 36) {
-            return diseaseName;
-        }
-        int end = Math.min(4, diseaseName.length());
-        return diseaseName.substring(0, end);
-    }
-
-    private ResourceLocation diseaseIconTexture(String diseaseKey) {
-        ResourceLocation specific = ResourceHelper.ModResource("textures/gui/sprites/container/condition_icons/" + diseaseKey + ".png");
-        if (Minecraft.getInstance().getResourceManager().getResource(specific).isPresent()) {
-            return specific;
-        }
-        return switch (diseaseKey) {
-            case "upper_respiratory_infection" -> ResourceHelper.ModResource("textures/gui/sprites/container/condition_icons/respiratory_arrest.png");
-            case "sepsis" -> ResourceHelper.ModResource("textures/gui/sprites/container/condition_icons/infection.png");
-            case "undead_infection" -> ResourceHelper.ModResource("textures/gui/sprites/container/condition_icons/gangrene.png");
-            case "dietary_complication" -> ResourceHelper.ModResource("textures/gui/sprites/container/condition_icons/withdraw.png");
-            case "ptsd" -> ResourceHelper.ModResource("textures/gui/sprites/container/condition_icons/withdraw.png");
-            case "fracture_dislocation" -> ResourceHelper.ModResource("textures/gui/sprites/container/condition_icons/dislocation.png");
-            case "aids" -> ResourceHelper.ModResource("textures/gui/sprites/container/condition_icons/infection.png");
-            case "tetanus" -> ResourceHelper.ModResource("textures/gui/sprites/container/condition_icons/intense_pain.png");
-            case "crimson_disease" -> ResourceHelper.ModResource("textures/gui/sprites/container/condition_icons/burn.png");
-            case "hippocratic_syndrome" -> ResourceHelper.ModResource("textures/gui/sprites/container/condition_icons/internal_injury.png");
-            case "ender_erosion" -> ResourceHelper.ModResource("textures/gui/sprites/container/condition_icons/brain_damage.png");
-            default -> ResourceHelper.ModResource("textures/gui/sprites/container/condition_icons/infection.png");
-        };
-    }
-
-    private List<DiseaseRow> buildActiveDiseasesForComponent(BodyComponents component) {
-        List<DiseaseRow> all = buildActiveDiseases();
-        List<DiseaseRow> mapped = new ArrayList<>();
-        for (DiseaseRow row : all) {
-            if (diseaseBelongsToComponent(row.key(), component)) {
-                mapped.add(row);
-            }
-        }
-        return mapped;
-    }
-
-    private boolean diseaseBelongsToComponent(String diseaseKey, BodyComponents component) {
-        return switch (diseaseKey) {
-            case "ptsd", "ender_erosion" -> component == HEAD;
-            case "fracture_dislocation" -> component == LEFT_ARM || component == RIGHT_ARM || component == LEFT_LEG || component == RIGHT_LEG;
-            case "upper_respiratory_infection", "sepsis", "undead_infection", "dietary_complication",
-                    "aids", "tetanus", "crimson_disease", "hippocratic_syndrome" -> component == TORSO;
-            default -> false;
-        };
-    }
-
-    private List<DiseaseRow> buildActiveDiseases() {
-        List<DiseaseRow> list = new ArrayList<>();
-        if (diseaseData == null) return list;
-        addIfActive(list, "upper_respiratory_infection",
-                diseaseData.upperRespiratoryInfectionStage(), diseaseData.upperRespiratoryInfectionProgress());
-        addIfActive(list, "sepsis",
-                diseaseData.sepsisStage(), diseaseData.sepsisProgress());
-        addIfActive(list, "undead_infection",
-                diseaseData.undeadInfectionStage(), diseaseData.undeadInfectionProgress());
-        addIfActive(list, "dietary_complication",
-                diseaseData.dietaryComplicationStage(), diseaseData.dietaryComplicationProgress());
-        addIfActive(list, "ptsd",
-                diseaseData.ptsdStage(), diseaseData.ptsdProgress());
-        addIfActive(list, "fracture_dislocation",
-                diseaseData.fractureDislocationStage(), diseaseData.fractureDislocationProgress());
-        addIfActive(list, "aids",
-                diseaseData.aidsStage(), diseaseData.aidsProgress());
-        addIfActive(list, "tetanus",
-                diseaseData.tetanusStage(), diseaseData.tetanusProgress());
-        addIfActive(list, "crimson_disease",
-                diseaseData.crimsonDiseaseStage(), diseaseData.crimsonDiseaseProgress());
-        addIfActive(list, "hippocratic_syndrome",
-            diseaseData.hippocraticSyndromeStage(), diseaseData.hippocraticSyndromeProgress());
-        addIfActive(list, "ender_erosion",
-            diseaseData.enderErosionStage(), diseaseData.enderErosionProgress());
-        return list;
-    }
-
-    private static void addIfActive(List<DiseaseRow> list, String key, int stage, int progress) {
-        if (stage > 0) list.add(new DiseaseRow(key, stage, progress));
-    }
-
-    private static int diseaseProgressColor(int stage) {
-        return switch (stage) {
-            case 1  -> 0xFF4488FF;
-            case 2  -> 0xFFCC8800;
-            default -> 0xFFFF3300;
-        };
-    }
-
-    private record DiseaseRow(String key, int stage, int progress) {}
 
     protected void renderHeartBeat(GuiGraphics guiGraphics) {
         int panelX = (guiGraphics.guiWidth() - PANEL_WIDTH) / 2 + HEART_BEAT_X;
@@ -526,31 +348,6 @@ public class HealthScreen<T extends HealthMenu> extends AbstractContainerScreen<
 
     public void setDiseaseData(DiseaseCapability diseaseData) {
         HealthScreen.diseaseData = diseaseData;
-    }
-
-    private boolean isBodyComponentClick(double mouseX, double mouseY) {
-        for (HealthComponentWidget widget : this.componentWidgets.values()) {
-            if (widget.isMouseOver(mouseX, mouseY)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private void clearComponentSelection() {
-        if (this.selectedComponent == null) {
-            return;
-        }
-        if (this.onOrgan && healthData != null) {
-            this.setOnOrgan(false);
-        }
-        this.selectedComponent = null;
-        for (HealthConditionWidget widget : this.conditionWidgets.values()) {
-            widget.visible = false;
-        }
-        this.selectedDiseaseRows.clear();
-        this.visibleConditionCount = 0;
-        this.visibleDiseaseCount = 0;
     }
 
     private void setOnOrgan(boolean onOrgan) {
