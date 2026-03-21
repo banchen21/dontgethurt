@@ -8,7 +8,6 @@ import com.lastimp.dgh.common.enums.BodyComponents;
 import com.lastimp.dgh.common.enums.InjuryPart;
 import com.lastimp.dgh.common.utils.Serializable;
 import com.lastimp.dgh.common.utils.Utils;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EquipmentSlot;

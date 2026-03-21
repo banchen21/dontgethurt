@@ -11,7 +11,6 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.ItemEntity;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.AABB;
@@ -22,7 +21,6 @@ import org.slf4j.Logger;
 import java.util.List;
 import java.util.UUID;
 
-import static com.lastimp.dgh.common.capability.healthCore.damageSystem.InjuryEventHandler.INJURY_WEIGHT;
 
 public abstract class Utils {
     public static final String MODID = "dgh";

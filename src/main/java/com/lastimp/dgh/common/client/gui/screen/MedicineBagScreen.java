@@ -1,6 +1,5 @@
 package com.lastimp.dgh.common.client.gui.screen;
 
-import com.lastimp.dgh.DontGetHurt;
 import com.lastimp.dgh.common.PlatformService;
 import com.lastimp.dgh.common.network.message.MyHealingItemUseData;
 import com.lastimp.dgh.common.client.ClientAccessor;

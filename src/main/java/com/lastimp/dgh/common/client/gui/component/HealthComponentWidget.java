@@ -1,6 +1,5 @@
 package com.lastimp.dgh.common.client.gui.component;
 
-import com.lastimp.dgh.DontGetHurt;
 import com.lastimp.dgh.common.enums.BodyComponents;
 import com.lastimp.dgh.common.utils.ResourceHelper;
 import com.mojang.blaze3d.systems.RenderSystem;

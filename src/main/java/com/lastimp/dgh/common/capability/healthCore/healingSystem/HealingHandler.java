@@ -1,4 +1,3 @@
-
 package com.lastimp.dgh.common.capability.healthCore.healingSystem;
 
 import com.lastimp.dgh.common.capability.bodyPart.base.AbstractVisibleBody;
@@ -16,6 +15,7 @@ import com.lastimp.dgh.common.item.medicine.Bandages;
 import com.lastimp.dgh.common.item.medicine.Clamp;
 import com.lastimp.dgh.common.item.medicine.Gypsum;
 import com.lastimp.dgh.common.item.medicine.Tourniquet;
+import com.lastimp.dgh.common.capability.healthCore.diseaseSystem.DiseaseEventHandler;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
@@ -80,8 +80,12 @@ public class HealingHandler {
         if (success) {
             source.getCooldowns().addCooldown(healingItem, 10);
             HealthCapability.getAndApply(target, h -> h.setLastHealer(source.getUUID()));
+            DiseaseEventHandler.onMedicineUsed(target, itemStack);
             if (itemStack.isDamageableItem()) {
-                itemStack.hurtAndBreak(1, source, (player) -> {});
+                itemStack.setDamageValue(itemStack.getDamageValue() + 1);
+                if (itemStack.getDamageValue() >= itemStack.getMaxDamage()) {
+                    itemStack.shrink(1);
+                }
             } else {
                 itemStack.shrink(1);
             }

@@ -2,6 +2,8 @@ package com.lastimp.dgh.forge.capability;
 
 import com.lastimp.dgh.common.capability.HealthCapability;
 import com.lastimp.dgh.common.capability.ICapabilityHelper;
+import com.lastimp.dgh.common.capability.NutrientCapability;
+import com.lastimp.dgh.common.capability.DiseaseCapability;
 import com.lastimp.dgh.common.config.impl.HealthLivingEntityList;
 import com.lastimp.dgh.common.config.impl.PlayerBlackList;
 import com.lastimp.dgh.forge.entry.register.ModCapabilities;
@@ -21,7 +23,32 @@ public class CapabilityHelperNF implements ICapabilityHelper {
 
     @Override
     public Optional<HealthCapability> getHealth(LivingEntity entity) {
-        return entity.getCapability(ModCapabilities.HEALTH, null).resolve();
+        try {
+            return entity.getCapability(ModCapabilities.HEALTH, null).resolve();
+        } catch (Throwable ignored) {
+            // Some entities query capability during constructor before synced data is ready.
+            return Optional.empty();
+        }
+    }
+
+    @Override
+    public boolean hasNutrient(Entity entity) {
+        return entity instanceof Player;
+    }
+
+    @Override
+    public Optional<NutrientCapability> getNutrient(Player player) {
+        return player.getCapability(ModCapabilities.NUTRIENT, null).resolve();
+    }
+
+    @Override
+    public boolean hasDisease(Entity entity) {
+        return entity instanceof Player;
+    }
+
+    @Override
+    public Optional<DiseaseCapability> getDisease(Player player) {
+        return player.getCapability(ModCapabilities.DISEASE, null).resolve();
     }
 
     @Override

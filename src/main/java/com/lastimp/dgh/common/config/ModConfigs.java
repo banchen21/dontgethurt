@@ -3,6 +3,7 @@ package com.lastimp.dgh.common.config;
 import com.lastimp.dgh.common.PlatformService;
 import com.lastimp.dgh.common.config.impl.ArmorList;
 import com.lastimp.dgh.common.config.impl.HealthLivingEntityList;
+import com.lastimp.dgh.common.config.impl.NutrientFoodList;
 import com.lastimp.dgh.common.config.impl.PlayerBlackList;
 import com.lastimp.dgh.common.network.message.MyServerConfigSynData;
 import net.minecraft.nbt.CompoundTag;
@@ -19,6 +20,7 @@ public abstract class ModConfigs {
         configs.put(Type.HEALTH, new HealthLivingEntityList());
         configs.put(Type.BLACKLIST, new PlayerBlackList());
         configs.put(Type.ARMOR, new ArmorList());
+        configs.put(Type.NUTRIENT_FOOD, new NutrientFoodList());
     }
 
     public static CompoundTag getCompound(Type type) {
@@ -38,6 +40,6 @@ public abstract class ModConfigs {
     }
 
     public enum Type {
-        HEALTH, BLACKLIST, ARMOR
+        HEALTH, BLACKLIST, ARMOR, NUTRIENT_FOOD
     }
 }

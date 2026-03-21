@@ -22,7 +22,6 @@ import java.util.List;
 import java.util.Set;
 
 import static com.lastimp.dgh.common.capability.bodyPart.base.BodyCondition.*;
-import static com.lastimp.dgh.common.enums.BodyComponents.*;
 
 public class Sutures extends AbstractPartlyHealItem {
     private static final Set<ResourceLocation> cover = new HashSet<>();

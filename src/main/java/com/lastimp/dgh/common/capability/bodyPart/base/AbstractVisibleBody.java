@@ -325,13 +325,6 @@ public abstract class AbstractVisibleBody extends AbstractBody {
         this.getCondition(BLEED).setValue(this.nextTickBleed);
     }
 
-    private void handleArterialBleeding(HealthCapability health) {
-        if (this.abnormal(ARTERIAL_BLEEDING) && !this.abnormal(CLAMPED_ARTERIES)) {
-            var blood = health.getComponent(BLOOD);
-            blood.injury(BLOOD_LOSS, PlatformService.CONFIG.FRACTURE_BLOOD_RATIO() * Utils.DELTA);
-        }
-    }
-
     public boolean canHurtBone() {
         return !this.abnormalWithHidden(SAWED_BONES);
     }

@@ -14,7 +14,6 @@ import net.minecraft.world.level.Level;
 import java.util.List;
 
 import static com.lastimp.dgh.common.capability.bodyPart.base.BodyCondition.*;
-import static com.lastimp.dgh.common.enums.BodyComponents.*;
 
 public class PlasticSkin extends Bandages {
     public PlasticSkin(Properties properties) {

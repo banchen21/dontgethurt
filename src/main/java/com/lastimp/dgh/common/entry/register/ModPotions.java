@@ -1,14 +1,9 @@
 package com.lastimp.dgh.common.entry.register;
 
-import com.lastimp.dgh.DontGetHurt;
 import com.lastimp.dgh.common.PlatformService;
 import com.lastimp.dgh.common.entry.IEntry;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.item.alchemy.Potion;
-import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.registries.DeferredRegister;
-import net.minecraftforge.registries.RegistryObject;
 
 import java.util.HashMap;
 import java.util.Map;

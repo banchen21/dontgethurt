@@ -8,6 +8,7 @@ import com.lastimp.dgh.common.item.tool.*;
 import com.lastimp.dgh.common.capability.bodyPart.base.BodyCondition;
 import com.lastimp.dgh.common.item.limbs.HumanHand;
 import com.lastimp.dgh.common.item.limbs.HumanLeg;
+import com.lastimp.dgh.common.capability.healthCore.diseaseSystem.DiseaseState;
 import net.minecraft.world.item.*;
 
 import java.util.HashSet;
@@ -39,6 +40,11 @@ public class ModItems {
 
     public static final IEntry<Item> BLOOD_SCANNER = registerItem(
             "blood_scanner", BloodScanner::new,
+            new Item.Properties().stacksTo(1)
+    );
+
+    public static final IEntry<Item> NUTRIENT_SCANNER = registerItem(
+            "nutrient_scanner", NutrientScanner::new,
             new Item.Properties().stacksTo(1)
     );
     //背包
@@ -199,6 +205,47 @@ public class ModItems {
 
     public static final IEntry<Item> FOOD_CONSUMER = registerItem(
             "food_consumer", FoodConsumer::new,
+            new Item.Properties().stacksTo(16)
+    );
+
+    // 疾病药物注册（采用功能更全的实现）
+    public static final IEntry<Item> LAMIVUDINE_CAPSULE = registerItem(
+            "lamivudine_capsule", (properties) -> new DelayedCapsuleMedicine(properties, DiseaseState.MED_LAMIVUDINE, "·艾滋病"),
+            new Item.Properties().stacksTo(16)
+    );
+
+    public static final IEntry<Item> DEXTROMETHORPHAN = registerItem(
+            "dextromethorphan", (properties) -> new DelayedCapsuleMedicine(properties, DiseaseState.MED_DEXTROMETHORPHAN, "·上呼吸道感染"),
+            new Item.Properties().stacksTo(16)
+    );
+
+    public static final IEntry<Item> IBUPROFEN = registerItem(
+            "ibuprofen", (properties) -> new DelayedCapsuleMedicine(properties, DiseaseState.MED_IBUPROFEN, "·缓解上呼吸道感染症状"),
+            new Item.Properties().stacksTo(16)
+    );
+
+    public static final IEntry<Item> ORAL_LIQUID = registerItem(
+            "oral_liquid", (properties) -> new DiseaseDirectMedicine(properties, DiseaseState.MED_ORAL_LIQUID, "·辅助缓解上呼吸道感染"),
+            new Item.Properties().stacksTo(16)
+    );
+
+    public static final IEntry<Item> TARGETING_AGENT = registerItem(
+            "targeting_agent", (properties) -> new DiseaseDirectMedicine(properties, DiseaseState.MED_TARGETING_AGENT, "·缓解尸毒恶化"),
+            new Item.Properties().stacksTo(16)
+    );
+
+    public static final IEntry<Item> SEDATIVE = registerItem(
+            "sedative", (properties) -> new DiseaseDirectMedicine(properties, DiseaseState.MED_SEDATIVE, "·缓解创伤后应激障碍"),
+            new Item.Properties().stacksTo(16)
+    );
+
+    public static final IEntry<Item> BLOCKER = registerItem(
+            "blocker", (properties) -> new DiseaseDirectMedicine(properties, DiseaseState.MED_BLOCKER, "·短时间阻断尸毒感染"),
+            new Item.Properties().stacksTo(16)
+    );
+
+    public static final IEntry<Item> RIBAVIRIN = registerItem(
+            "ribavirin", (properties) -> new DiseaseDirectMedicine(properties, DiseaseState.MED_RIBAVIRIN, "·快速压制重型/中型上呼吸道感染"),
             new Item.Properties().stacksTo(16)
     );
     //手术工具

@@ -30,43 +30,43 @@ public class ConfigNF implements IConfig {
 
     private static final ForgeConfigSpec.DoubleValue BANDAGE_ACC = BUILDER
             .comment("绷带回复增益系数")
-            .defineInRange("BANDAGE_ACC",2.0,0,10);
+            .defineInRange("BANDAGE_ACC", 2.0, 0, 10);
 
     private static final ForgeConfigSpec.DoubleValue BURN_BLEED_RATIO = BUILDER
             .comment("烧伤出血系数")
-            .defineInRange("BURN_BLEED_RATIO",0.5,0,10);
+            .defineInRange("BURN_BLEED_RATIO", 0.5, 0, 10);
 
     private static final ForgeConfigSpec.DoubleValue INTERNAL_BLEED_RATIO = BUILDER
             .comment("内伤出血系数")
-            .defineInRange("INTERNAL_BLEED_RATIO",0.2,0,10);
+            .defineInRange("INTERNAL_BLEED_RATIO", 0.2, 0, 10);
 
     private static final ForgeConfigSpec.DoubleValue OPEN_WOUND_BLEED_RATIO = BUILDER
             .comment("开放伤出血系数")
-            .defineInRange("OPEN_WOUND_BLEED_RATIO",0.8,0,10);
+            .defineInRange("OPEN_WOUND_BLEED_RATIO", 0.8, 0, 10);
 
     private static final ForgeConfigSpec.DoubleValue INTERNAL_FOOD_HEALING = BUILDER
             .comment("饱食度恢复系数")
-            .defineInRange("INTERNAL_FOOD_HEALING",4.0,1.0, Float.MAX_VALUE);
+            .defineInRange("INTERNAL_FOOD_HEALING", 4.0, 1.0, Float.MAX_VALUE);
 
     private static final ForgeConfigSpec.DoubleValue BLEED_VOLUME_RATIO = BUILDER
             .comment("出血-失血转化系数")
-            .defineInRange("BLEED_VOLUME_RATIO",0.005,0, Float.MAX_VALUE);
+            .defineInRange("BLEED_VOLUME_RATIO", 0.005, 0, Float.MAX_VALUE);
 
     private static final ForgeConfigSpec.DoubleValue WITHDRAW_RATIO = BUILDER
             .comment("成瘾-戒断转化系数")
-            .defineInRange("WITHDRAW_RATIO",0.03,0, Float.MAX_VALUE);
+            .defineInRange("WITHDRAW_RATIO", 0.03, 0, Float.MAX_VALUE);
 
     private static final ForgeConfigSpec.IntValue BASE_SELF_HEALING_TIME = BUILDER
             .comment("伤口自愈系数")
-            .defineInRange("BASE_SELF_HEALING_TIME",500,1, Integer.MAX_VALUE);
+            .defineInRange("BASE_SELF_HEALING_TIME", 500, 1, Integer.MAX_VALUE);
 
     private static final ForgeConfigSpec.IntValue BASE_MED_AVAILABLE_TIME = BUILDER
             .comment("药品有效时间系数")
-            .defineInRange("BASE_MED_AVAILABLE_TIME",100,1, Integer.MAX_VALUE);
+            .defineInRange("BASE_MED_AVAILABLE_TIME", 100, 1, Integer.MAX_VALUE);
 
     private static final ForgeConfigSpec.IntValue VOLUME_SELF_HEALING_TIME = BUILDER
             .comment("出血自愈系数")
-            .defineInRange("VOLUME_SELF_HEALING_TIME",200,1, Integer.MAX_VALUE);
+            .defineInRange("VOLUME_SELF_HEALING_TIME", 200, 1, Integer.MAX_VALUE);
 
     private static final ForgeConfigSpec.DoubleValue RESISTANCE_CONVERT_RATIO = BUILDER
             .comment("治愈-抗性转化系数")
@@ -175,6 +175,74 @@ public class ConfigNF implements IConfig {
     private static final ForgeConfigSpec.DoubleValue BLOCK_RECOVER_SPEED = BUILDER
             .comment("护甲格挡恢复速度")
             .defineInRange("BLOCK_RECOVER_SPEED", 0.1, 0, 1.0);
+
+    private static final ForgeConfigSpec.BooleanValue ENABLE_SURVIVAL_STATUS = BUILDER
+            .comment("启用生存状态扩展框架")
+            .define("ENABLE_SURVIVAL_STATUS", true);
+
+    private static final ForgeConfigSpec.BooleanValue ENABLE_HYDRATION_SYSTEM = BUILDER
+            .comment("启用水分系统")
+            .define("ENABLE_HYDRATION_SYSTEM", true);
+
+    private static final ForgeConfigSpec.DoubleValue HYDRATION_DECAY_BASE = BUILDER
+            .comment("基础水分衰减(每秒)")
+            .defineInRange("HYDRATION_DECAY_BASE", 0.0012, 0, 1.0);
+
+    private static final ForgeConfigSpec.DoubleValue HYDRATION_DECAY_SPRINT = BUILDER
+            .comment("冲刺额外水分衰减(每秒)")
+            .defineInRange("HYDRATION_DECAY_SPRINT", 0.0015, 0, 1.0);
+
+    private static final ForgeConfigSpec.DoubleValue HYDRATION_RECOVER_IN_WATER = BUILDER
+            .comment("雨水/涉水环境水分恢复(每秒)")
+            .defineInRange("HYDRATION_RECOVER_IN_WATER", 0.001, 0, 1.0);
+
+    private static final ForgeConfigSpec.DoubleValue HYDRATION_LOW_THRESHOLD = BUILDER
+            .comment("水分偏低阈值")
+            .defineInRange("HYDRATION_LOW_THRESHOLD", 0.25, 0, 1.0);
+
+    private static final ForgeConfigSpec.DoubleValue HYDRATION_CRITICAL_THRESHOLD = BUILDER
+            .comment("水分危险阈值")
+            .defineInRange("HYDRATION_CRITICAL_THRESHOLD", 0.1, 0, 1.0);
+
+    private static final ForgeConfigSpec.DoubleValue LOW_CARBOHYDRATE_BLINDNESS_THRESHOLD = BUILDER
+            .comment("低糖触发失明阈值")
+            .defineInRange("LOW_CARBOHYDRATE_BLINDNESS_THRESHOLD", 0.20, 0, 1.0);
+
+    private static final ForgeConfigSpec.IntValue LOW_CARBOHYDRATE_BLINDNESS_INTERVAL = BUILDER
+            .comment("低糖失明触发间隔（ticks）")
+            .defineInRange("LOW_CARBOHYDRATE_BLINDNESS_INTERVAL", 120, 20, Integer.MAX_VALUE);
+
+    private static final ForgeConfigSpec.DoubleValue HIGH_CARBOHYDRATE_THRESHOLD = BUILDER
+            .comment("高糖阈值")
+            .defineInRange("HIGH_CARBOHYDRATE_THRESHOLD", 0.80, 0, 1.0);
+
+    private static final ForgeConfigSpec.DoubleValue HIGH_CARBOHYDRATE_JUMP_HYDRATION_PENALTY = BUILDER
+            .comment("高糖跳跃额外失水")
+            .defineInRange("HIGH_CARBOHYDRATE_JUMP_HYDRATION_PENALTY", 0.015, 0, 1.0);
+
+    private static final ForgeConfigSpec.IntValue DRUG_CAPSULE_COOLDOWN_TICKS = BUILDER
+            .comment("胶囊服药冷却（ticks）")
+            .defineInRange("DRUG_CAPSULE_COOLDOWN_TICKS", 6000, 20, Integer.MAX_VALUE);
+
+    private static final ForgeConfigSpec.IntValue DRUG_CAPSULE_DELAY_TICKS = BUILDER
+            .comment("胶囊延迟生效（ticks）")
+            .defineInRange("DRUG_CAPSULE_DELAY_TICKS", 2400, 20, Integer.MAX_VALUE);
+
+    private static final ForgeConfigSpec.IntValue DRUG_BLOCKER_DURATION_TICKS = BUILDER
+            .comment("阻断剂持续时长（ticks）")
+            .defineInRange("DRUG_BLOCKER_DURATION_TICKS", 2400, 20, Integer.MAX_VALUE);
+
+    private static final ForgeConfigSpec.DoubleValue DRUG_NEEDLE_CONTAMINATION_CHANCE = BUILDER
+            .comment("污染药针感染概率")
+            .defineInRange("DRUG_NEEDLE_CONTAMINATION_CHANCE", 0.35, 0.0, 1.0);
+
+        private static final ForgeConfigSpec.DoubleValue DRUG_LAMIVUDINE_CURE_CHANCE = BUILDER
+            .comment("拉米夫定胶囊治愈 AIDS 的概率（0.0 - 1.0）")
+            .defineInRange("DRUG_LAMIVUDINE_CURE_CHANCE", 0.10, 0.0, 1.0);
+
+    private static final ForgeConfigSpec.IntValue GIVE_UP_TIMEOUT_SECONDS = BUILDER
+            .comment("放弃治疗所需持续时间（秒）")
+            .defineInRange("GIVE_UP_TIMEOUT_SECONDS", 5, 1, 60);
 
     // 构建配置
     public static final ForgeConfigSpec SPEC = BUILDER.pop().build();
@@ -388,4 +456,90 @@ public class ConfigNF implements IConfig {
     public float BLOCK_RECOVER_SPEED() {
         return (float) (double) BLOCK_RECOVER_SPEED.get();
     }
+
+    @Override
+    public boolean ENABLE_SURVIVAL_STATUS() {
+        return ENABLE_SURVIVAL_STATUS.get();
+    }
+
+    @Override
+    public boolean ENABLE_HYDRATION_SYSTEM() {
+        return ENABLE_HYDRATION_SYSTEM.get();
+    }
+
+    @Override
+    public float HYDRATION_DECAY_BASE() {
+        return (float) (double) HYDRATION_DECAY_BASE.get();
+    }
+
+    @Override
+    public float HYDRATION_DECAY_SPRINT() {
+        return (float) (double) HYDRATION_DECAY_SPRINT.get();
+    }
+
+    @Override
+    public float HYDRATION_RECOVER_IN_WATER() {
+        return (float) (double) HYDRATION_RECOVER_IN_WATER.get();
+    }
+
+    @Override
+    public float HYDRATION_LOW_THRESHOLD() {
+        return (float) (double) HYDRATION_LOW_THRESHOLD.get();
+    }
+
+    @Override
+    public float HYDRATION_CRITICAL_THRESHOLD() {
+        return (float) (double) HYDRATION_CRITICAL_THRESHOLD.get();
+    }
+
+    @Override
+    public float LOW_CARBOHYDRATE_BLINDNESS_THRESHOLD() {
+        return (float) (double) LOW_CARBOHYDRATE_BLINDNESS_THRESHOLD.get();
+    }
+
+    @Override
+    public int LOW_CARBOHYDRATE_BLINDNESS_INTERVAL() {
+        return LOW_CARBOHYDRATE_BLINDNESS_INTERVAL.get();
+    }
+
+    @Override
+    public float HIGH_CARBOHYDRATE_THRESHOLD() {
+        return (float) (double) HIGH_CARBOHYDRATE_THRESHOLD.get();
+    }
+
+    @Override
+    public float HIGH_CARBOHYDRATE_JUMP_HYDRATION_PENALTY() {
+        return (float) (double) HIGH_CARBOHYDRATE_JUMP_HYDRATION_PENALTY.get();
+    }
+
+    @Override
+    public int DRUG_CAPSULE_COOLDOWN_TICKS() {
+        return DRUG_CAPSULE_COOLDOWN_TICKS.get();
+    }
+
+    @Override
+    public int DRUG_CAPSULE_DELAY_TICKS() {
+        return DRUG_CAPSULE_DELAY_TICKS.get();
+    }
+
+    @Override
+    public int DRUG_BLOCKER_DURATION_TICKS() {
+        return DRUG_BLOCKER_DURATION_TICKS.get();
+    }
+
+    @Override
+    public float DRUG_NEEDLE_CONTAMINATION_CHANCE() {
+        return (float) (double) DRUG_NEEDLE_CONTAMINATION_CHANCE.get();
+    }
+
+    @Override
+    public float DRUG_LAMIVUDINE_CURE_CHANCE() {
+        return (float) (double) DRUG_LAMIVUDINE_CURE_CHANCE.get();
+    }
+
+    @Override
+    public int GIVE_UP_TIMEOUT_SECONDS() {
+        return GIVE_UP_TIMEOUT_SECONDS.get();
+    }
+
 }

@@ -17,7 +17,7 @@ public record InjuryDataSet(
     private static final EquipmentSlot[] LEG = {EquipmentSlot.LEGS, EquipmentSlot.FEET};
     private static final EquipmentSlot[] BODY = {EquipmentSlot.CHEST};
     private static final EquipmentSlot[] HEAD = {EquipmentSlot.HEAD};
-    @SuppressWarnings("unchecked")
+
     public void handle(LivingEntity entity, DamageSource source, HealthCapability health, float totalDamage) {
         Arrays.stream(this.injuryData).forEach(data -> data.handle(entity, source, health, totalDamage));
     }

@@ -1,0 +1,35 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_ribavirin": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "dgh:ribavirin"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "dgh:ribavirin_cleaned"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_ribavirin",
+      "has_the_recipe"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "dgh:ribavirin_cleaned"
+    ]
+  },
+  "sends_telemetry_event": false
+}

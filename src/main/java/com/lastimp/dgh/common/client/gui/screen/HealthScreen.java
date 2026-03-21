@@ -2,6 +2,7 @@
 package com.lastimp.dgh.common.client.gui.screen;
 
 import com.lastimp.dgh.common.PlatformService;
+import com.lastimp.dgh.common.capability.DiseaseCapability;
 import com.lastimp.dgh.common.capability.bodyPart.ConditionAccessor;
 import com.lastimp.dgh.common.capability.bodyPart.base.AbstractVisibleBody;
 import com.lastimp.dgh.common.client.gui.component.DynamicBarHealthWidget;
@@ -49,6 +50,9 @@ public class HealthScreen<T extends HealthMenu> extends AbstractContainerScreen<
     protected static final ResourceLocation HUD_HEART_BEAT_ACC2 = ResourceHelper.ModResource("textures/gui/heart_beat_hud_acc2.png");
     protected static final ResourceLocation HUD_HEART_BEAT_STOP = ResourceHelper.ModResource("textures/gui/heart_beat_hud_stop.png");
     protected static final ResourceLocation SLOT_DISABLE_MASK = ResourceHelper.ModResource("textures/gui/slot_disable_mask.png");
+        // 记录是否至少点击过一次部位（用于初始保持空白）
+        protected boolean hasUserSelectedOnce = false;
+
 
     protected static final int PANEL_WIDTH = 256;   // 面板宽度
     protected static final int PANEL_HEIGHT = 215;  // 面板高度
@@ -61,6 +65,7 @@ public class HealthScreen<T extends HealthMenu> extends AbstractContainerScreen<
     protected final HashMap<ResourceLocation, HealthConditionWidget> conditionWidgets = new HashMap<>();
     protected BodyComponents selectedComponent = null;
     protected static HealthCapability healthData = null;
+    protected static DiseaseCapability diseaseData = null;
     protected boolean onOrgan = false;
 
     public HealthScreen(T menu, Inventory playerInventory, Component title) {
@@ -96,11 +101,13 @@ public class HealthScreen<T extends HealthMenu> extends AbstractContainerScreen<
                 this.leftPos + x, this.topPos + y, width, height,
                 Component.literal(idx.toString()),
                 (button) -> {
+                    // 始终立即设置选中，保证用户点击后有反馈
+                    this.selectedComponent = idx;
+                    this.hasUserSelectedOnce = true;
                     if (healthData != null) {
                         boolean onOrgan = this.selectedComponent == idx && healthData.getComponent(idx).abnormal(RETRACTED_SKIN) && !this.onOrgan;
                         onOrgan &= this.getMenu().targetEntity.equals(ClientAccessor.getPlayerOrThrow().getUUID());
                         this.setOnOrgan(onOrgan);
-                        this.selectedComponent = idx;
                     }
                 },
                 idx, resource, resourceLighted
@@ -216,6 +223,17 @@ public class HealthScreen<T extends HealthMenu> extends AbstractContainerScreen<
 
     @Override
     protected void renderLabels(GuiGraphics guiGraphics, int mouseX, int mouseY) {
+        // 初始未点击过时保持空白
+        if (this.selectedComponent == null) return;
+
+        // 如果已选中但数据尚未到达，显示占位加载文字
+        if (healthData == null) {
+            String loading = "正在读取部位数据...";
+            int x = this.leftPos + 85;
+            int y = this.topPos + 11;
+            guiGraphics.drawString(this.font, loading, x, y, 0xFF000000, false);
+        }
+        // 否则交由条件 widget 自行渲染（它们是 renderable widgets）
     }
 
     protected void renderHeartBeat(GuiGraphics guiGraphics) {
@@ -326,6 +344,10 @@ public class HealthScreen<T extends HealthMenu> extends AbstractContainerScreen<
     public void setHealthData(HealthCapability healthData) {
         HealthScreen.healthData = healthData;
         if (healthData != null) this.menu.setEquipments(healthData);
+    }
+
+    public void setDiseaseData(DiseaseCapability diseaseData) {
+        HealthScreen.diseaseData = diseaseData;
     }
 
     private void setOnOrgan(boolean onOrgan) {

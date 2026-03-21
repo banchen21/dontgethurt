@@ -1,6 +1,5 @@
 package com.lastimp.dgh.forge.entry;
 
-import com.lastimp.dgh.DontGetHurt;
 import com.lastimp.dgh.common.entry.IEntry;
 import com.lastimp.dgh.common.entry.IRegistryHandler;
 import com.lastimp.dgh.common.entry.register.*;

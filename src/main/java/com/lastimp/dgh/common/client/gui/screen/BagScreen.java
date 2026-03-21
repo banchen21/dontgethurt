@@ -1,6 +1,5 @@
 package com.lastimp.dgh.common.client.gui.screen;
 
-import com.lastimp.dgh.DontGetHurt;
 import com.lastimp.dgh.common.client.ClientAccessor;
 import com.lastimp.dgh.common.menu.BagMenu;
 import com.lastimp.dgh.common.utils.ResourceHelper;

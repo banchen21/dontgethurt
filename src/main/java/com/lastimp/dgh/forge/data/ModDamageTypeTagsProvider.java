@@ -19,16 +19,24 @@ public class ModDamageTypeTagsProvider extends DamageTypeTagsProvider {
 
     @Override
     protected void addTags(HolderLookup.Provider provider) {
-        ResourceKey<DamageType>[] damages = new ResourceKey[ModDamageType.DGH_FINAL_DAMAGE.size()];
-        ModDamageType.DGH_FINAL_DAMAGE.toArray(damages);
+        var finalHealthTag = this.tag(ModDamageType.FINAL_HEALTH_DAMAGE);
+        var bypassArmorTag = this.tag(DamageTypeTags.BYPASSES_ARMOR);
+        var bypassShieldTag = this.tag(DamageTypeTags.BYPASSES_SHIELD);
+        var bypassInvulnerabilityTag = this.tag(DamageTypeTags.BYPASSES_INVULNERABILITY);
+        var bypassCooldownTag = this.tag(DamageTypeTags.BYPASSES_COOLDOWN);
+        var bypassEffectsTag = this.tag(DamageTypeTags.BYPASSES_EFFECTS);
+        var bypassResistanceTag = this.tag(DamageTypeTags.BYPASSES_RESISTANCE);
+        var bypassEnchantmentsTag = this.tag(DamageTypeTags.BYPASSES_ENCHANTMENTS);
 
-        this.tag(ModDamageType.FINAL_HEALTH_DAMAGE).add(damages);
-        this.tag(DamageTypeTags.BYPASSES_ARMOR).add(damages);
-        this.tag(DamageTypeTags.BYPASSES_SHIELD).add(damages);
-        this.tag(DamageTypeTags.BYPASSES_INVULNERABILITY).add(damages);
-        this.tag(DamageTypeTags.BYPASSES_COOLDOWN).add(damages);
-        this.tag(DamageTypeTags.BYPASSES_EFFECTS).add(damages);
-        this.tag(DamageTypeTags.BYPASSES_RESISTANCE).add(damages);
-        this.tag(DamageTypeTags.BYPASSES_ENCHANTMENTS).add(damages);
+        for (ResourceKey<DamageType> damage : ModDamageType.DGH_FINAL_DAMAGE) {
+            finalHealthTag.add(damage);
+            bypassArmorTag.add(damage);
+            bypassShieldTag.add(damage);
+            bypassInvulnerabilityTag.add(damage);
+            bypassCooldownTag.add(damage);
+            bypassEffectsTag.add(damage);
+            bypassResistanceTag.add(damage);
+            bypassEnchantmentsTag.add(damage);
+        }
     }
 }

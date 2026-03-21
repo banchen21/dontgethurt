@@ -1,4 +1,3 @@
-
 package com.lastimp.dgh.common.client.hotkey;
 
 import com.lastimp.dgh.common.client.ClientPlatformService;
@@ -18,7 +17,7 @@ public class KeyBinding {
     public static final Set<KeyMapping> keys = new HashSet<>();
 
     public static final KeyMapping OPEN_MENU_KEY = addKey(KEY_HEALTH_MENU, GLFW.GLFW_KEY_O);
-    public static final KeyMapping GIVE_UP =  addKey(KEY_GIVE_UP, GLFW.GLFW_KEY_O);
+    public static final KeyMapping GIVE_UP = addKey(KEY_GIVE_UP, GLFW.GLFW_KEY_F);
 
     private static KeyMapping addKey(String name, int key) {
         var newKey = ClientPlatformService.KEY_HELPER.getKey(name, key);

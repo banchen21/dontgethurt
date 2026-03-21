@@ -1,6 +1,5 @@
 package com.lastimp.dgh.common.tags;
 
-import com.lastimp.dgh.DontGetHurt;
 import com.lastimp.dgh.common.utils.ResourceHelper;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;

@@ -67,6 +67,16 @@ public class ModRecipeProvider extends RecipeProvider {
                 .define('d', Items.GLASS)
                 .unlockedBy("has_blood_pack_empty", has(ModItems.BLOOD_PACK_EMPTY.get()))
                 .save(recipeOutput);
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.NUTRIENT_SCANNER.get(), 1)
+                .pattern(" d ")
+                .pattern("bcb")
+                .pattern("aaa")
+                .define('a', Items.IRON_INGOT)
+                .define('b', Items.REDSTONE)
+                .define('c', Items.WHEAT_SEEDS)
+                .define('d', Items.GLASS)
+                .unlockedBy("has_wheat_seeds", has(Items.WHEAT_SEEDS))
+                .save(recipeOutput);
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.HEALTH_SCANNER.get(), 1)
                 .pattern(" d ")
                 .pattern("bcb")
@@ -545,6 +555,63 @@ public class ModRecipeProvider extends RecipeProvider {
                 .requires(Items.GUNPOWDER)
                 .requires(Items.BONE_MEAL)
                 .unlockedBy("has_sugar", has(Items.SUGAR))
+                .save(recipeOutput);
+
+        // M3 疾病药物
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ModItems.DEXTROMETHORPHAN.get())
+                .requires(Items.SUGAR)
+                .requires(ModItems.MORPHINE.get())
+                .requires(Items.GLASS_BOTTLE)
+                .unlockedBy("has_morphine", has(ModItems.MORPHINE.get()))
+                .save(recipeOutput);
+
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ModItems.IBUPROFEN.get())
+                .requires(ModItems.FOOD_CONSUMER.get())
+                .requires(Items.SUGAR)
+                .requires(Items.GLASS_BOTTLE)
+                .unlockedBy("has_food_consumer", has(ModItems.FOOD_CONSUMER.get()))
+                .save(recipeOutput);
+
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ModItems.RIBAVIRIN.get())
+                .requires(ModItems.ANTIBIOTICS.get())
+                .requires(ModItems.NEEDLE.get())
+                .requires(Items.GLASS_BOTTLE)
+                .unlockedBy("has_antibiotics", has(ModItems.ANTIBIOTICS.get()))
+                .save(recipeOutput);
+
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ModItems.BLOCKER.get())
+                .requires(ModItems.HYPERZINE.get())
+                .requires(ModItems.HARDENER.get())
+                .requires(ModItems.NEEDLE.get())
+                .unlockedBy("has_hyperzine", has(ModItems.HYPERZINE.get()))
+                .save(recipeOutput);
+
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ModItems.SEDATIVE.get())
+                .requires(ModItems.MORPHINE.get())
+                .requires(ModItems.NALOXONE.get())
+                .requires(Items.GLASS_BOTTLE)
+                .unlockedBy("has_naloxone", has(ModItems.NALOXONE.get()))
+                .save(recipeOutput);
+
+        // M3 针具清洁（已污染的注射针 + 消毒剂 → 新的干净针，产出物无污染 NBT）
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ModItems.RIBAVIRIN.get())
+                .requires(ModItems.RIBAVIRIN.get())
+                .requires(ModItems.ANTISEPTIC.get())
+                .unlockedBy("has_ribavirin", has(ModItems.RIBAVIRIN.get()))
+                .save(recipeOutput, ResourceHelper.ModResource("ribavirin_cleaned"));
+
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ModItems.BLOCKER.get())
+                .requires(ModItems.BLOCKER.get())
+                .requires(ModItems.ANTISEPTIC.get())
+                .unlockedBy("has_blocker", has(ModItems.BLOCKER.get()))
+                .save(recipeOutput, ResourceHelper.ModResource("blocker_cleaned"));
+
+        // M5 拉米夫定胶囊：安印席山 + 吸水石 + 玻璃瓶
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ModItems.LAMIVUDINE_CAPSULE.get())
+                .requires(ModItems.ANTIBIOTICS.get())
+                .requires(ModItems.MORPHINE.get())
+                .requires(Items.GLASS_BOTTLE)
+                .unlockedBy("has_antibiotics", has(ModItems.ANTIBIOTICS.get()))
                 .save(recipeOutput);
 
 

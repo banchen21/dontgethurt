@@ -1,4 +1,3 @@
-
 package com.lastimp.dgh.common.capability;
 
 import com.lastimp.dgh.common.PlatformService;
@@ -19,6 +18,7 @@ import com.lastimp.dgh.common.container.DynamicItemHandler;
 import com.lastimp.dgh.common.enums.BodyComponents;
 import com.lastimp.dgh.common.entry.register.ModEffects;
 import com.lastimp.dgh.common.entry.register.ModItems;
+import com.lastimp.dgh.common.capability.healthCore.diseaseSystem.DiseaseState;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.network.chat.Component;
@@ -56,6 +56,7 @@ public class HealthCapability implements Serializable {
     private float outerHealingDelta = 0;
     private UUID lastHealer = UUID.randomUUID();
     private final ArmorData armorData = new ArmorData();
+    private final DiseaseState disease = new DiseaseState();
     //同步属性
     private int armBreak = 0;
     private int availableEye = 2;
@@ -186,6 +187,7 @@ public class HealthCapability implements Serializable {
         this.updateALLEquipments(entity);
         if (!this.isFrozen())
             this.body.update(this, entity);
+        this.disease.tick(this, entity);
         this.updateLabels(entity);
         return this;
     }
@@ -193,13 +195,21 @@ public class HealthCapability implements Serializable {
     public void updateALLEquipments(LivingEntity entity) {
         if (updateEquipment(entity, this.oxygenMask, this.oxygenMaskCoolDown)) {
             this.oxygenMaskCoolDown = this.getCoolDown(this.oxygenMask);
-            this.oxygenMask.getStackInSlot(0).hurtAndBreak(1, entity, (i) -> {});
+            var oxygenMaskStack = this.oxygenMask.getStackInSlot(0);
+            oxygenMaskStack.setDamageValue(oxygenMaskStack.getDamageValue() + 1);
+            if (oxygenMaskStack.getDamageValue() >= oxygenMaskStack.getMaxDamage()) {
+                this.oxygenMask.setStackInSlot(0, ItemStack.EMPTY);
+            }
         } else if (this.oxygenMaskCoolDown > 0) {
             this.oxygenMaskCoolDown--;
         }
         if (updateEquipment(entity, this.autoPulse, this.autoPulseCoolDown)) {
             this.autoPulseCoolDown = this.getCoolDown(this.autoPulse);
-            this.autoPulse.getStackInSlot(0).hurtAndBreak(1, entity, (i) -> {});
+            var autoPulseStack = this.autoPulse.getStackInSlot(0);
+            autoPulseStack.setDamageValue(autoPulseStack.getDamageValue() + 1);
+            if (autoPulseStack.getDamageValue() >= autoPulseStack.getMaxDamage()) {
+                this.autoPulse.setStackInSlot(0, ItemStack.EMPTY);
+            }
         } else if (this.autoPulseCoolDown > 0) {
             this.autoPulseCoolDown--;
         }
@@ -306,7 +316,7 @@ public class HealthCapability implements Serializable {
         var recordList = this.lastDeathDirectInjury.isEmpty() ? this.directInjury : this.lastDeathDirectInjury;
         Component title = Component.literal(name.getString() + (this.lastDeathDirectInjury.isEmpty() ? "的病例" : "的尸检报告"));
         var bookTag = BookHelper.getBookTag(title, author, recordList);
-        stack.setTag(bookTag);
+        stack.getOrCreateTagElement("tag").merge(bookTag);
         return true;
     }
 
@@ -370,6 +380,7 @@ public class HealthCapability implements Serializable {
     public CompoundTag serialize() {
         CompoundTag tag = new CompoundTag();
         tag.put("body", this.body.serialize());
+        tag.put("disease", this.disease.serializeNBT());
         tag.putFloat("playerVitality", this.vitality);
         tag.putLong("livingTick", this.livingTick);
         tag.putFloat("almostDead", this.almostDead);
@@ -417,6 +428,7 @@ public class HealthCapability implements Serializable {
     @Override
     public void deserialize(CompoundTag nbt) {
         this.body.deserialize(nbt.getCompound("body"));
+        this.disease.deserializeNBT(nbt.getCompound("disease"));
         this.vitality = nbt.getFloat("playerVitality");
         this.livingTick = nbt.getLong("livingTick");
         this.almostDead = nbt.getFloat("almostDead");
@@ -563,5 +575,9 @@ public class HealthCapability implements Serializable {
 
     public boolean abnormal() {
         return abnormal;
+    }
+
+    public DiseaseState disease() {
+        return disease;
     }
 }

@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "dgh:hyperzine"
+    },
+    {
+      "item": "dgh:hardener"
+    },
+    {
+      "item": "dgh:needle"
+    }
+  ],
+  "result": {
+    "item": "dgh:blocker"
+  }
+}

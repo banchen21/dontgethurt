@@ -3,7 +3,6 @@ plugins {
     id 'idea'
     id 'maven-publish'
     id 'net.minecraftforge.gradle' version '[6.0,6.2)'
-    id 'org.spongepowered.mixin' version '0.7.+'   // Mixin Gradle 插件
 }
 
 version = mod_version
@@ -77,12 +76,7 @@ repositories {
     }
 }
 
-mixin {
-    add sourceSets.main, 'dgh.refmap.json'
-    config 'dgh.mixins.json'
-    config 'dgh.TaZC.mixins.json'
-    config 'dgh.touhoulittlemaid.mixins.json'
-}
+    // Mixin support removed from this project — mixin configs and plugin disabled
 
 dependencies {
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
@@ -98,19 +92,20 @@ dependencies {
     compileOnly fg.deobf("curse.maven:touhou-little-maid-355044:7307720-sources-7307731")
     runtimeOnly fg.deobf("curse.maven:touhou-little-maid-355044:7307720-sources-7307731")
 
-    runtimeOnly fg.deobf("curse.maven:touhou-little-maid-spell-1290017:7534684")
-
-    // MixinExtras
-    compileOnly(annotationProcessor("io.github.llamalad7:mixinextras-common:0.5.0"))
-    implementation(jarJar("io.github.llamalad7:mixinextras-forge:0.5.0")) {
-        jarJar.ranged(it, "[0.5.0,)")
+    if (Boolean.parseBoolean((project.findProperty("enable_tlm_spell_runtime") ?: "false").toString())) {
+        runtimeOnly fg.deobf("curse.maven:touhou-little-maid-spell-1290017:7534684")
     }
 
-    annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
+    // mixin dependencies removed
 }
 
 tasks.withType(JavaCompile).configureEach {
     options.annotationProcessorPath = configurations.annotationProcessor
+    options.compilerArgs += [
+            '-Xlint:deprecation',
+            '-Xlint:unchecked',
+            '-Xlint:rawtypes'
+    ]
 }
 
 

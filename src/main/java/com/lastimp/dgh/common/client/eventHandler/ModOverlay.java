@@ -50,13 +50,14 @@ public abstract class ModOverlay {
     public static void renderDyingOverlay(LocalPlayer player, GuiGraphics graphics) {
         if (!HealthCapability.isDown(player)) return;
         graphics.drawCenteredString(ClientAccessor.mc().font,
-                Component.literal("按下鼠标求救"),
-                graphics.guiWidth() / 2, graphics.guiHeight() / 2 - 50, 0xFFFFFFFF
+            Component.literal("按下鼠标求救"),
+            graphics.guiWidth() / 2, graphics.guiHeight() / 2 - 50, 0xFFFFFFFF
         );
         if (PlatformService.CONFIG.ENABLE_SELF_SUICIDE()) {
+            int timeout = PlatformService.CONFIG.GIVE_UP_TIMEOUT_SECONDS();
             graphics.drawCenteredString(ClientAccessor.mc().font,
-                    Component.literal("按住").append(KeyBinding.GIVE_UP.getTranslatedKeyMessage()).append("键5秒放弃治疗"),
-                    graphics.guiWidth() / 2, graphics.guiHeight() / 2 + 15 - 50, 0xFFFFFFFF
+                Component.literal("按住").append(KeyBinding.GIVE_UP.getTranslatedKeyMessage()).append("键" + timeout + "秒放弃治疗"),
+                graphics.guiWidth() / 2, graphics.guiHeight() / 2 + 15 - 50, 0xFFFFFFFF
             );
         }
     }

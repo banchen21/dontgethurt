@@ -123,15 +123,6 @@ public class Blood extends AbstractBody {
         this.healing(BLOOD_LOSS, -blood_loss_healing * Utils.DELTA);
     }
 
-    private boolean isBleeding(HealthCapability health) {
-        for (var component : BodyComponents.VISIBLE_BODIES) {
-            var body = health.getComponent(component);
-            if (body.abnormal(BLEED))
-                return true;
-        }
-        return false;
-    }
-
     private void handleOxygen(HealthCapability health, LivingEntity entity) {
         this.oxygenLost = false;
         var bloodLoss = this.getConditionValue(BLOOD_LOSS);

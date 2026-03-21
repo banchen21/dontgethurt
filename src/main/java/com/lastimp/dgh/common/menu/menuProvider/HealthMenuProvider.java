@@ -1,6 +1,5 @@
 package com.lastimp.dgh.common.menu.menuProvider;
 
-import com.lastimp.dgh.DontGetHurt;
 import com.lastimp.dgh.common.menu.HealthMenu;
 import com.lastimp.dgh.common.utils.Utils;
 import net.minecraft.network.chat.Component;

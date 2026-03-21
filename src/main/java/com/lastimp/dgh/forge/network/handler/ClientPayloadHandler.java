@@ -1,6 +1,7 @@
 
 package com.lastimp.dgh.forge.network.handler;
 
+import com.lastimp.dgh.common.capability.DiseaseCapability;
 import com.lastimp.dgh.common.config.ModConfigs;
 import com.lastimp.dgh.common.enums.OperationType;
 import com.lastimp.dgh.common.network.message.MyReadAllConditionData;
@@ -23,6 +24,8 @@ public class ClientPayloadHandler {
             if (operation == OperationType.HEALTH_SCANN && GuiOpenWrapper.healthScreen() != null) {
                 HealthCapability health = MyReadAllConditionData.getHealthFromInstance(data.tag());
                 GuiOpenWrapper.healthScreen().setHealthData(health);
+                DiseaseCapability disease = MyReadAllConditionData.getDiseaseFromInstance(data.extraTag());
+                GuiOpenWrapper.healthScreen().setDiseaseData(disease);
             } else if (operation == OperationType.SYN) {
                 var entity = ClientAccessor.getLiving(data.entityID());
                 if (entity != null && HealthCapability.has(entity)) {

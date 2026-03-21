@@ -1,6 +1,5 @@
 package com.lastimp.dgh.common.client.renderer;
 
-import com.lastimp.dgh.DontGetHurt;
 import com.lastimp.dgh.common.entity.StretcherEntity;
 import com.lastimp.dgh.common.client.renderer.entityModel.StretcherEntityModel;
 import com.lastimp.dgh.common.utils.ResourceHelper;

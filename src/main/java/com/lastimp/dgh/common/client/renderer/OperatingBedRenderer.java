@@ -1,6 +1,5 @@
 package com.lastimp.dgh.common.client.renderer;
 
-import com.lastimp.dgh.DontGetHurt;
 import com.lastimp.dgh.common.block.OperatingBedBlock;
 import com.lastimp.dgh.common.utils.ResourceHelper;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -8,11 +7,8 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import it.unimi.dsi.fastutil.ints.Int2IntFunction;
 import net.minecraft.client.model.geom.ModelPart;
-import net.minecraft.client.model.geom.PartPose;
-import net.minecraft.client.model.geom.builders.CubeListBuilder;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.model.geom.builders.MeshDefinition;
-import net.minecraft.client.model.geom.builders.PartDefinition;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
@@ -47,7 +43,8 @@ public class OperatingBedRenderer implements BlockEntityRenderer<OperatingBedBlo
         if (level != null) {
             BlockState blockstate = entity.getBlockState();
             DoubleBlockCombiner.NeighborCombineResult<? extends BedBlockEntity> neighborcombineresult = DoubleBlockCombiner.combineWithNeigbour(BlockEntityType.BED, BedBlock::getBlockType, BedBlock::getConnectedDirection, ChestBlock.FACING, blockstate, level, entity.getBlockPos(), (p_112202_, p_112203_) -> false);
-            int i = ((Int2IntFunction)neighborcombineresult.apply(new BrightnessCombiner())).get(packedLight);
+            Int2IntFunction brightness = neighborcombineresult.apply(new BrightnessCombiner<>());
+            int i = brightness.get(packedLight);
             this.renderPiece(poseStack, buffer, blockstate.getValue(BedBlock.PART) == BedPart.HEAD ? this.headRoot : this.footRoot, blockstate.getValue(BedBlock.FACING), material, i, packedOverlay, false);
         } else {
             this.renderPiece(poseStack, buffer, this.headRoot, Direction.SOUTH, material, packedLight, packedOverlay, false);
@@ -67,27 +64,11 @@ public class OperatingBedRenderer implements BlockEntityRenderer<OperatingBedBlo
 
     public static LayerDefinition createHeadLayer() {
         MeshDefinition meshdefinition = new MeshDefinition();
-        PartDefinition partdefinition = meshdefinition.getRoot();
-        PartDefinition group = partdefinition.addOrReplaceChild("group", CubeListBuilder.create()
-                .texOffs(0, 20).addBox(-8.0F, -9.0F, -8.0F, 16.0F, 4.0F, 16.0F)
-                .texOffs(0, 50).addBox(-3.0F, -2.0F, -8.0F, 6.0F, 2.0F, 8.0F)
-                .texOffs(16, 12).addBox(-2.0F, -5.0F, -8.0F, 4.0F, 3.0F, 4.0F), PartPose.offsetAndRotation(0.0F, 24.0F, 0.0F, 0.0F, 3.1416F, 0.0F));
-
-        PartDefinition cube_r1 = group.addOrReplaceChild("cube_r1", CubeListBuilder.create().texOffs(0, 43).addBox(-8.0F, -2.0F, 0.0F, 8.0F, 2.0F, 5.0F), PartPose.offsetAndRotation(4.0F, -7.0F, 3.0F, 0.3927F, 0.0F, 0.0F));
         return LayerDefinition.create(meshdefinition, 64, 64);
     }
 
     public static LayerDefinition createFootLayer() {
         MeshDefinition meshdefinition = new MeshDefinition();
-        PartDefinition partdefinition = meshdefinition.getRoot();
-        PartDefinition bone = partdefinition.addOrReplaceChild("bone", CubeListBuilder.create()
-                .texOffs(0, 0).addBox(-8.0F, -9.0F, -8.0F, 16.0F, 4.0F, 16.0F)
-                .texOffs(0, 56).addBox(6.0F, -11.0F, -5.0F, 2.0F, 2.0F, 2.0F)
-                .texOffs(0, 54).addBox(6.0F, -12.0F, -8.0F, 2.0F, 1.0F, 9.0F)
-                .texOffs(0, 56).addBox(-8.0F, -11.0F, -5.0F, 2.0F, 2.0F, 2.0F)
-                .texOffs(0, 54).addBox(-8.0F, -12.0F, -8.0F, 2.0F, 1.0F, 9.0F)
-                .texOffs(0, 50).addBox(-3.0F, -2.0F, -8.0F, 6.0F, 2.0F, 8.0F)
-                .texOffs(16, 12).addBox(-2.0F, -5.0F, -8.0F, 4.0F, 3.0F, 4.0F), PartPose.offset(0.0F, 24.0F, 0.0F));
         return LayerDefinition.create(meshdefinition, 64, 64);
     }
 }

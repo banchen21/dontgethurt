@@ -58,4 +58,57 @@ public abstract class ClientAccessor {
         }
         return null;
     }
+
+    public static void setHandsBusy(LocalPlayer player, boolean busy) {
+        if (player == null) return;
+        try {
+            // try method first
+            try {
+                var m = player.getClass().getMethod("setHandsBusy", boolean.class);
+                m.invoke(player, busy);
+                return;
+            } catch (NoSuchMethodException ignored) {
+            }
+
+            // try field fallback (common accessor name guesses)
+            for (String name : new String[]{"handsBusy", "isHandsBusy", "hands_busy"}) {
+                try {
+                    var f = player.getClass().getDeclaredField(name);
+                    f.setAccessible(true);
+                    if (f.getType() == boolean.class || f.getType() == Boolean.class) {
+                        f.setBoolean(player, busy);
+                        return;
+                    }
+                } catch (Throwable ignored) {
+                }
+            }
+        } catch (Throwable ignored) {
+        }
+    }
+
+    public static void setMissTime(int t) {
+        try {
+            Minecraft mc = Minecraft.getInstance();
+            try {
+                var m = mc.getClass().getMethod("setMissTime", int.class);
+                m.invoke(mc, t);
+                return;
+            } catch (NoSuchMethodException ignored) {
+            }
+
+            // try field fallback
+            for (String name : new String[]{"missTime", "tickMissTime", "miss_time"}) {
+                try {
+                    var f = mc.getClass().getDeclaredField(name);
+                    f.setAccessible(true);
+                    if (f.getType() == int.class || f.getType() == Integer.class) {
+                        f.setInt(mc, t);
+                        return;
+                    }
+                } catch (Throwable ignored) {
+                }
+            }
+        } catch (Throwable ignored) {
+        }
+    }
 }

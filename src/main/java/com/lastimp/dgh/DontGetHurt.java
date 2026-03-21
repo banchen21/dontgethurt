@@ -5,6 +5,7 @@ import com.lastimp.dgh.common.PlatformService;
 import com.lastimp.dgh.common.capability.bodyPart.ConditionAccessor;
 import com.lastimp.dgh.common.config.ModConfigs;
 import com.lastimp.dgh.common.utils.Utils;
+import com.lastimp.dgh.compact.CompatRegistry;
 import com.lastimp.dgh.forge.config.ConfigNF;
 import com.lastimp.dgh.forge.network.ModNetwork;
 import com.lastimp.dgh.forge.entry.RegistryHandlerNF;
@@ -68,6 +69,7 @@ public class DontGetHurt {
         Utils.LOGGER.info("HELLO FROM COMMON SETUP");
         ModNetwork.registerMessage();
         event.enqueueWork(() -> {
+            CompatRegistry.init();
             ModConfigs.loadExternalList();
             ConditionAccessor.init();
         });

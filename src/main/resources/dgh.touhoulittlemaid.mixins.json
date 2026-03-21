@@ -1,5 +1,6 @@
 {
   "required": false,
+  "minVersion": "0.8",
   "package": "com.lastimp.dgh.compact.touhoulittlemaid.mixin",
   "refmap": "dgh.refmap.json",
   "minVersion": "0.8",

@@ -1,4 +1,3 @@
-
 package com.lastimp.dgh.forge.data;
 
 import com.lastimp.dgh.common.tags.ModTags;
@@ -51,7 +50,15 @@ public class ModItemTagsProvider extends TagsProvider<Item> {
                 .add(ModItems.FOOD_CONSUMER.getKey())
                 .add(ModItems.FENTANYL.getKey())
                 .add(ModItems.HYPERZINE.getKey())
-                .add(ModItems.HARDENER.getKey());
+                .add(ModItems.HARDENER.getKey())
+                .add(ModItems.LAMIVUDINE_CAPSULE.getKey())
+                .add(ModItems.DEXTROMETHORPHAN.getKey())
+                .add(ModItems.IBUPROFEN.getKey())
+                .add(ModItems.ORAL_LIQUID.getKey())
+                .add(ModItems.TARGETING_AGENT.getKey())
+                .add(ModItems.SEDATIVE.getKey())
+                .add(ModItems.BLOCKER.getKey())
+                .add(ModItems.RIBAVIRIN.getKey());
 
         this.tag(ModTags.MEDICINE_DIRECT)
                 .add(POTIONS)
@@ -65,7 +72,15 @@ public class ModItemTagsProvider extends TagsProvider<Item> {
                 .add(ModItems.FOOD_CONSUMER.getKey())
                 .add(ModItems.FENTANYL.getKey())
                 .add(ModItems.HYPERZINE.getKey())
-                .add(ModItems.HARDENER.getKey());
+                .add(ModItems.HARDENER.getKey())
+                .add(ModItems.LAMIVUDINE_CAPSULE.getKey())
+                .add(ModItems.DEXTROMETHORPHAN.getKey())
+                .add(ModItems.IBUPROFEN.getKey())
+                .add(ModItems.ORAL_LIQUID.getKey())
+                .add(ModItems.TARGETING_AGENT.getKey())
+                .add(ModItems.SEDATIVE.getKey())
+                .add(ModItems.BLOCKER.getKey())
+                .add(ModItems.RIBAVIRIN.getKey());
 
         this.tag(ModTags.MEDICAL_TOOLS)
                 .add(SHEARS)

@@ -3,8 +3,6 @@ package com.lastimp.dgh.compact.touhoulittlemaid;
 import com.github.tartaricacid.touhoulittlemaid.api.task.IMaidTask;
 import com.github.tartaricacid.touhoulittlemaid.entity.ai.brain.task.MaidWalkToLivingEntityTask;
 import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
-import com.google.common.collect.Lists;
-import com.lastimp.dgh.DontGetHurt;
 import com.lastimp.dgh.common.capability.HealthCapability;
 import com.lastimp.dgh.common.item.tool.StretcherItem;
 import com.lastimp.dgh.common.entry.register.ModItems;
@@ -44,12 +42,12 @@ public class TaskBringToBed implements IMaidTask {
 
     @Override
     public List<Pair<Integer, BehaviorControl<? super EntityMaid>>> createBrainTasks(EntityMaid entityMaid) {
-        return Lists.newArrayList(new Pair[]{Pair.of(5, this.createWalkToLivingEntityTask()),});
+        return List.of(Pair.of(5, this.createWalkToLivingEntityTask()));
     }
 
     @Override
     public List<Pair<Integer, BehaviorControl<? super EntityMaid>>> createRideBrainTasks(EntityMaid maid) {
-        return Lists.newArrayList(new Pair[]{Pair.of(5, this.createWalkToLivingEntityTask()),});
+        return List.of(Pair.of(5, this.createWalkToLivingEntityTask()));
     }
 
     private MaidWalkToLivingEntityTask createWalkToLivingEntityTask() {

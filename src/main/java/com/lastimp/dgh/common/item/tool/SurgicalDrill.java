@@ -17,7 +17,6 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 
 import static com.lastimp.dgh.common.capability.bodyPart.base.BodyCondition.*;
-import static com.lastimp.dgh.common.enums.BodyComponents.*;
 
 public class SurgicalDrill extends AbstractPartlyHealItem {
     public SurgicalDrill(Properties properties) {

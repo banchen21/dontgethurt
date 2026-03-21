@@ -1,6 +1,7 @@
 package com.lastimp.dgh.forge.network.handler;
 
 import com.lastimp.dgh.common.PlatformService;
+import com.lastimp.dgh.common.capability.DiseaseCapability;
 import com.lastimp.dgh.common.capability.bodyPart.base.AbstractVisibleBody;
 import com.lastimp.dgh.common.enums.BodyComponents;
 import com.lastimp.dgh.common.enums.OperationType;
@@ -31,10 +32,24 @@ public class ServerPayloadHandler {
             var target = Utils.getLivingWithHealth(sender.serverLevel(), uuid);
             if (target == null) return;
 
-            HealthCapability.getAndApply(target, health -> PlatformService.NETWORK.sendToPlayer(
+                HealthCapability.getAndApply(target, health -> {
+                var operation = OperationType.valueOf(data.oper());
+                if (operation == OperationType.HEALTH_SCANN) {
+                    var diseaseTag = target instanceof net.minecraft.world.entity.player.Player player
+                        ? DiseaseCapability.getAndApply(player, DiseaseCapability::serialize, null)
+                        : null;
+                    PlatformService.NETWORK.sendToPlayer(
+                        context.getSender(),
+                        MyReadAllConditionData.getInstance(uuid, target.getId(), health.serialize(), diseaseTag, operation)
+                    );
+                    return;
+                }
+
+                PlatformService.NETWORK.sendToPlayer(
                     context.getSender(),
-                    MyReadAllConditionData.getInstance(uuid, target.getId(), health.serialize(), OperationType.valueOf(data.oper()))
-            ));
+                    MyReadAllConditionData.getInstance(uuid, target.getId(), health.serialize(), operation)
+                );
+                });
         });
         context.setPacketHandled(true);
     }

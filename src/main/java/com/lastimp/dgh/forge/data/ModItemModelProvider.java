@@ -2,12 +2,12 @@
 package com.lastimp.dgh.forge.data;
 
 import com.lastimp.dgh.common.entry.register.ModItems;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.client.model.generators.ItemModelProvider;
 import net.minecraftforge.common.data.ExistingFileHelper;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.Objects;
 
@@ -24,7 +24,7 @@ public class ModItemModelProvider extends ItemModelProvider {
     }
 
     public ResourceLocation getResourceLocation(Item item){
-        return Objects.requireNonNull(BuiltInRegistries.ITEM.getKey(item));
+        return Objects.requireNonNull(ForgeRegistries.ITEMS.getKey(item));
     }
 
 //    public void magicIngotModel(ResourceLocation item){

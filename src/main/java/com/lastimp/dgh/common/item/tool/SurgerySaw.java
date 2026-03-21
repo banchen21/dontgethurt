@@ -1,6 +1,5 @@
 package com.lastimp.dgh.common.item.tool;
 
-import com.lastimp.dgh.DontGetHurt;
 import com.lastimp.dgh.common.capability.bodyPart.ConditionAccessor;
 import com.lastimp.dgh.common.enums.BodyComponents;
 import com.lastimp.dgh.common.item.bases.AbstractPartlyHealItem;
@@ -8,7 +7,6 @@ import com.lastimp.dgh.common.capability.bodyPart.base.AbstractArm;
 import com.lastimp.dgh.common.capability.bodyPart.base.AbstractBody;
 import com.lastimp.dgh.common.capability.bodyPart.base.AbstractExtremities;
 import com.lastimp.dgh.common.capability.bodyPart.base.AbstractVisibleBody;
-import com.lastimp.dgh.common.utils.ResourceHelper;
 import com.lastimp.dgh.common.utils.Utils;
 import com.lastimp.dgh.common.capability.bodyPart.bodies.Torso;
 import com.lastimp.dgh.common.capability.healthCore.dyingSystem.DyingHandler;
@@ -33,8 +31,6 @@ import java.util.List;
 import static com.lastimp.dgh.common.capability.bodyPart.base.BodyCondition.*;
 
 public class SurgerySaw extends AbstractPartlyHealItem {
-    private static final ResourceLocation BONE_NATURAL = ResourceHelper.ModResource("bone_natural");
-
     public SurgerySaw(Properties properties) {
         super(properties);
     }

@@ -69,7 +69,17 @@ public class ModVillagers {
                     16, 1, 0.2F
             ));
 
-            // 2级交易：消毒剂、吗啡、缝合线
+            // 2级交易：消毒剂、吗啡、缝合线、右美沙芬胶囊、布洛芬胶囊
+            level2Trades.add((trader, rand) -> new MerchantOffer(
+                    new ItemStack(Items.EMERALD, 4),
+                    new ItemStack(ModItems.DEXTROMETHORPHAN.get(), 2),
+                    12, 5, 0.2F
+            ));
+            level2Trades.add((trader, rand) -> new MerchantOffer(
+                    new ItemStack(Items.EMERALD, 3),
+                    new ItemStack(ModItems.IBUPROFEN.get(), 2),
+                    12, 5, 0.2F
+            ));
             level2Trades.add((trader, rand) -> new MerchantOffer(
                     new ItemStack(Items.CHARCOAL, 26), // 玩家出售的物品
                     new ItemStack(Items.EMERALD, 1), // 玩家获得的物品
@@ -96,7 +106,17 @@ public class ModVillagers {
                     16, 5, 0.05F
             ));
 
-            // 3级交易：气胸针、止血带、广谱抗生素、骨骼植入物
+            // 3级交易：气胸针、止血带、广谱抗生素、骨骼植入物、利巴韦林注射、镇静剂
+            level3Trades.add((trader, rand) -> new MerchantOffer(
+                    new ItemStack(Items.EMERALD, 8),
+                    new ItemStack(ModItems.RIBAVIRIN.get(), 1),
+                    8, 10, 0.2F
+            ));
+            level3Trades.add((trader, rand) -> new MerchantOffer(
+                    new ItemStack(Items.EMERALD, 6),
+                    new ItemStack(ModItems.SEDATIVE.get(), 2),
+                    10, 10, 0.2F
+            ));
             level3Trades.add((trader, rand) -> new MerchantOffer(
                     new ItemStack(Items.EMERALD, 5),
                     new ItemStack(ModItems.NEEDLE.get(), 2),
@@ -118,7 +138,17 @@ public class ModVillagers {
                     10, 10, 0.2F
             ));
 
-            // 4级交易：引流管、医用支架、肾上腺素、吗啡酮
+            // 4级交易：引流管、医用支架、肾上腺素、吗啡酮、阻断剂、拉米夫定
+            level4Trades.add((trader, rand) -> new MerchantOffer(
+                    new ItemStack(Items.EMERALD, 14),
+                    new ItemStack(ModItems.BLOCKER.get(), 1),
+                    6, 15, 0.2F
+            ));
+            level4Trades.add((trader, rand) -> new MerchantOffer(
+                    new ItemStack(Items.EMERALD, 12),
+                    new ItemStack(ModItems.LAMIVUDINE_CAPSULE.get(), 1),
+                    6, 15, 0.2F
+            ));
             level4Trades.add((trader, rand) -> new MerchantOffer(
                     new ItemStack(Items.EMERALD, 5),
                     new ItemStack(ModItems.NEEDLE.get(), 2),

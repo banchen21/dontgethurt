@@ -60,6 +60,7 @@ public class OperatingBedBlock extends BedBlock {
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public List<ItemStack> getDrops(BlockState state, LootParams.Builder params) {
         if (state.getValue(BedBlock.PART) == BedPart.HEAD) return Collections.emptyList();
         return super.getDrops(state, params);

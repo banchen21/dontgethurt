@@ -1,5 +1,7 @@
 package com.lastimp.dgh.common.event.eventHandler;
 
+import com.lastimp.dgh.common.capability.DiseaseCapability;
+import com.lastimp.dgh.common.system.disease.DiseaseManager;
 import com.lastimp.dgh.common.config.ModConfigs;
 import com.lastimp.dgh.common.item.bases.AbstractHealingItem;
 import com.lastimp.dgh.common.capability.HealthCapability;
@@ -28,6 +30,32 @@ public class PlayerEventHandler {
             data.put(Player.PERSISTED_NBT_TAG, persistedTag);
         }
         ModConfigs.synToPlayer((ServerPlayer) player);
+        // TEST: 给新玩家一次性触发所有疾病以便开发测试使用
+        final String TEST_KEY = "dgh_test_given_all_diseases";
+        if (!persistedTag.getBoolean(TEST_KEY)) {
+            var dm = new DiseaseManager();
+            String[] all = new String[]{
+                    "upper_respiratory_infection",
+                    "sepsis",
+                    "aids",
+                    "undead_infection",
+                    "ptsd",
+                    "fracture_dislocation",
+                    "crimson_disease",
+                    "hippocratic_syndrome",
+                    "ender_erosion",
+                    "dietary_complication",
+                    "tetanus"
+            };
+            for (var diseaseKey : all) {
+                try {
+                    dm.triggerDisease(player, diseaseKey);
+                } catch (Exception ignored) {
+                }
+            }
+            persistedTag.putBoolean(TEST_KEY, true);
+            data.put(Player.PERSISTED_NBT_TAG, persistedTag);
+        }
     }
 
     public static void logOut(Player player) {
@@ -58,7 +86,14 @@ public class PlayerEventHandler {
             newHealth.deserialize(new HealthCapability().serialize());
             newHealth.respawnDeserializeNBT(persistedTag.getCompound(HealthCapability.HEALTH_RECORD));
         });
+        DiseaseCapability.getAndApply(player, disease -> {
+            disease.deserialize(new DiseaseCapability().serialize());
+            if (persistedTag.contains(DiseaseCapability.DISEASE_RECORD)) {
+                disease.deserializeRespawnPersistent(persistedTag.getCompound(DiseaseCapability.DISEASE_RECORD));
+            }
+        });
         persistedTag.remove(HealthCapability.HEALTH_RECORD);
+        persistedTag.remove(DiseaseCapability.DISEASE_RECORD);
         data.put(Player.PERSISTED_NBT_TAG, persistedTag);
     }
 }
